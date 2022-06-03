@@ -1,7 +1,7 @@
 //Requiring mongoose and connecting to the yelp-camp database
 const mongoose = require("mongoose");
 const campground = require("../models/campground");
-mongoose.connect("mongodb://localhost:27017/yelp-camp");
+mongoose.connect("mongodb://127.0.0.1:27017/yelp-camp");
 
 //Requiring cities, places and descriptors
 const cities = require("./cities");
