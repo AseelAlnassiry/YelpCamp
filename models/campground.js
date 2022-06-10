@@ -1,5 +1,6 @@
 // Requiring Mongoose and schema
 const mongoose = require("mongoose");
+const Review = require("./review");
 const Schema = mongoose.Schema;
 
 // Creating the basic campground schema
@@ -16,5 +17,16 @@ const CampgroundSchema = new Schema({
     },
   ],
 });
+
+CampgroundSchema.post("findOneAndDelete", async function (doc) {
+  if (doc) {
+    await Review.deleteMany({
+      _id: {
+        $in: doc.reviews,
+      },
+    });
+  }
+});
+
 // Exporting the model to be usable elsewhere
 module.exports = mongoose.model("Campground", CampgroundSchema);
