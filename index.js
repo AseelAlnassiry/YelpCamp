@@ -4,12 +4,16 @@ const app = express();
 const mongoose = require("mongoose");
 const ejsMate = require("ejs-mate");
 const ExpresError = require("./utils/ExpressError");
-const campgrounds = require("./routes/campgrounds");
-const reviews = require("./routes/reviews");
+const campgroundRoutes = require("./routes/campgrounds");
+const reviewRoutes = require("./routes/reviews");
+const userRoutes = require("./routes/users");
 const methodOverride = require("method-override");
 const session = require("express-session");
 const flash = require("connect-flash");
 const db = mongoose.connection;
+const passport = require("passport");
+const localStrategy = require("passport-local");
+const User = require("./models/user");
 
 const sessionConfig = {
   secret: "thisshouldbeabettersecret!",
@@ -36,17 +40,34 @@ app.use(methodOverride("_method"));
 app.use(express.urlencoded({ extended: true }));
 app.use(session(sessionConfig));
 app.use(flash());
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new localStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 app.use((req, res, next) => {
-  res.locals.success = req.flash('success');
-  res.locals.error = req.flash('error');
+
+  res.locals.currentUser = req.user;
+  res.locals.success = req.flash("success");
+  res.locals.error = req.flash("error");
   next();
-})
-app.use("/campgrounds", campgrounds);
-app.use("/campgrounds/:id/reviews", reviews);
+});
+
+app.use("/campgrounds", campgroundRoutes);
+app.use("/campgrounds/:id/reviews", reviewRoutes);
+app.use("/", userRoutes);
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", (req, res) => {
   res.render("home");
+});
+
+app.get("/fakeuser", async (req, res) => {
+  const user = new User({ email: "aseelalnassiry@gmail.com", username: "Aseel" });
+  const newUser = await User.register(user, "chicken");
+  res.send(newUser);
 });
 
 app.all("*", (req, res, next) => {
