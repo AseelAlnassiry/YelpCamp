@@ -1,20 +1,20 @@
 //Requiring mongoose and connecting to the yelp-camp database
-const mongoose = require("mongoose");
-const campground = require("../models/campground");
-mongoose.connect("mongodb://127.0.0.1:27017/yelp-camp");
+const mongoose = require('mongoose');
+const campground = require('../models/campground');
+mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp');
 
 //Requiring cities, places and descriptors
-const cities = require("./cities");
-const { places, descriptors } = require("./seedHelper");
+const cities = require('./cities');
+const { places, descriptors } = require('./seedHelper');
 
 //Requiring campground model
-const Campground = require("../models/campground");
+const Campground = require('../models/campground');
 
 // Database connection confirm
 const db = mongoose.connection;
-db.on("error", console.error.bind(console, "connection error:"));
-db.once("open", () => {
-  console.log("Database connected");
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', () => {
+  console.log('Database connected');
 });
 
 const sample = (array) => array[Math.floor(Math.random() * array.length)];
@@ -27,10 +27,11 @@ const seedDB = async () => {
     const newCampground = new Campground({
       title: `${sample(descriptors)} ${sample(places)}`,
       location: `${cities[random1000].city}, ${cities[random1000].state}`,
-      image: "https://source.unsplash.com/collection/1510259",
+      author: '62aa619d350708b177f0a2a2',
+      image: 'https://source.unsplash.com/collection/1510259',
       description:
-        "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ex praesentium hic non magni? Voluptates tempore voluptas impedit praesentium consectetur quis, animi voluptatum. Saepe corporis fugit praesentium nam dolore molestias voluptate.",
-      price,  
+        'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ex praesentium hic non magni? Voluptates tempore voluptas impedit praesentium consectetur quis, animi voluptatum. Saepe corporis fugit praesentium nam dolore molestias voluptate.',
+      price,
     });
 
     await newCampground.save();
