@@ -1,28 +1,35 @@
 // Requiring Mongoose and schema
-const mongoose = require("mongoose");
-const Review = require("./review");
+const mongoose = require('mongoose');
+const Review = require('./review');
 const Schema = mongoose.Schema;
 
 // Creating the basic campground schema
+const ImageSchema = new Schema({
+  url: String,
+  filename: String,
+});
+ImageSchema.virtual('thumbnail').get(function () {
+  return this.url.replace('/upload', '/upload/w_200');
+});
 const CampgroundSchema = new Schema({
   title: String,
-  image: String,
+  images: [ImageSchema],
   price: Number,
   description: String,
   location: String,
   author: {
     type: Schema.Types.ObjectId,
-    ref: "User",
+    ref: 'User',
   },
   reviews: [
     {
       type: Schema.Types.ObjectId,
-      ref: "Review",
+      ref: 'Review',
     },
   ],
 });
 
-CampgroundSchema.post("findOneAndDelete", async function (doc) {
+CampgroundSchema.post('findOneAndDelete', async function (doc) {
   if (doc) {
     await Review.deleteMany({
       _id: {
@@ -33,4 +40,4 @@ CampgroundSchema.post("findOneAndDelete", async function (doc) {
 });
 
 // Exporting the model to be usable elsewhere
-module.exports = mongoose.model("Campground", CampgroundSchema);
+module.exports = mongoose.model('Campground', CampgroundSchema);
