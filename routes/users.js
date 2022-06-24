@@ -6,6 +6,8 @@ const User = require('../models/user');
 const passport = require('passport');
 const users = require('../controllers/users');
 
+router.route('/').get(users.renderHome);
+
 router.route('/register').get(users.renderRegister).post(catchAsync(users.register));
 
 router
@@ -24,4 +26,3 @@ router
 router.get('/logout', users.logout);
 
 module.exports = router;
-

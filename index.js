@@ -18,12 +18,15 @@ const db = mongoose.connection;
 const passport = require('passport');
 const localStrategy = require('passport-local');
 const User = require('./models/user');
+const mongoSanitize = require('express-mongo-sanitize');
 
 const sessionConfig = {
+  name: 'session',
   secret: 'thisshouldbeabettersecret!',
   resave: false,
   saveUninitialized: true,
   cookie: {
+    httpOnly: true,
     expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
@@ -44,6 +47,7 @@ app.use(methodOverride('_method'));
 app.use(express.urlencoded({ extended: true }));
 app.use(session(sessionConfig));
 app.use(flash());
+app.use(mongoSanitize());
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -62,16 +66,6 @@ app.use('/campgrounds', campgroundRoutes);
 app.use('/campgrounds/:id/reviews', reviewRoutes);
 app.use('/', userRoutes);
 app.use(express.static(path.join(__dirname, 'public')));
-
-app.get('/', (req, res) => {
-  res.render('home');
-});
-
-app.get('/fakeuser', async (req, res) => {
-  const user = new User({ email: 'aseelalnassiry@gmail.com', username: 'Aseel' });
-  const newUser = await User.register(user, 'chicken');
-  res.send(newUser);
-});
 
 app.all('*', (req, res, next) => {
   next(new ExpresError('Page Not Found', 404));
