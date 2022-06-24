@@ -25,7 +25,7 @@ const sample = (array) => array[Math.floor(Math.random() * array.length)];
 
 const seedDB = async () => {
   await campground.deleteMany({});
-  for (let i = 0; i < 200; i++) {
+  for (let i = 0; i < 1; i++) {
     const random1000 = Math.floor(Math.random() * 1000);
 
     const price = Math.floor(Math.random() * 20) + 10;
@@ -39,16 +39,8 @@ const seedDB = async () => {
       author: '62b08bc7c4764b942cc16dd6',
       images: [
         {
-          url: 'https://res.cloudinary.com/dfyobgtgj/image/upload/v1655737865/YelpCamp/oheukpb1rydy5zlplfir.jpg',
-          filename: 'YelpCamp/oheukpb1rydy5zlplfir',
-        },
-        {
-          url: 'https://res.cloudinary.com/dfyobgtgj/image/upload/v1655737866/YelpCamp/gbwvaowhwtehvkjxrmtu.jpg',
-          filename: 'YelpCamp/gbwvaowhwtehvkjxrmtu',
-        },
-        {
-          url: 'https://res.cloudinary.com/dfyobgtgj/image/upload/v1655737866/YelpCamp/ctcdyyjnl0vurizaqyjk.jpg',
-          filename: 'YelpCamp/ctcdyyjnl0vurizaqyjk',
+          url: 'https://res.cloudinary.com/dfyobgtgj/image/upload/v1656086231/YelpCamp/fi7zywhgnmmyghdjhvk5.jpg',
+          filename: 'YelpCamp/fi7zywhgnmmyghdjhvk5',
         },
       ],
       description:

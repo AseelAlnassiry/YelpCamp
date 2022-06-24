@@ -19,10 +19,26 @@ const passport = require('passport');
 const localStrategy = require('passport-local');
 const User = require('./models/user');
 const mongoSanitize = require('express-mongo-sanitize');
+const dbUrl = process.env.DB_URL;
+const mongoDBStore = require('connect-mongo');
+const secret = process.env.SECRET;
+
+const store = mongoDBStore.create({
+  mongoUrl: dbUrl,
+  touchAfter: 24 * 60 * 60,
+  crypto: {
+    secret,
+  },
+});
+
+store.on('error', function (e) {
+  console.log('SESSION STORE ERROR!', e);
+});
 
 const sessionConfig = {
+  store,
   name: 'session',
-  secret: 'thisshouldbeabettersecret!',
+  secret,
   resave: false,
   saveUninitialized: true,
   cookie: {
@@ -32,7 +48,9 @@ const sessionConfig = {
   },
 };
 
-mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp');
+// mongodb://127.0.0.1:27017/yelp-camp
+
+mongoose.connect(dbUrl);
 
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => {
@@ -48,7 +66,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(session(sessionConfig));
 app.use(flash());
 app.use(mongoSanitize());
-
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new localStrategy(User.authenticate()));
